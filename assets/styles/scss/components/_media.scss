@@ -1,0 +1,18 @@
+@media (max-width: 650px) {
+    .header {
+        justify-content: center;
+
+        &__branding {
+            &__logo {
+                width: 3rem;
+            }
+            &__name {
+                font-size: 1.1rem;
+            }
+        }
+
+        &__strava {
+            display: none;
+        }
+    }
+}

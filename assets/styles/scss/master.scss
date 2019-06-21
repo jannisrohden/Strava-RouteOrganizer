@@ -1,0 +1,21 @@
+@import '_setup';
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+body, html {
+    background: $white;
+}
+
+.main {
+    min-height: 90vh;
+    margin-top: 10rem;
+}
+
+@import 'components/_header';
+@import 'components/_footer';
+@import 'components/_media';
