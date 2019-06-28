@@ -4,14 +4,30 @@
     {
 
 
-        private static $folders = [
-            'foo' => [
-                'route1',
-                'test' => [
-                    'bar' => ['Route2', 'Route3']
+        private $folders = [];
+
+
+
+
+
+        /**
+         * Connects to Strava
+         */
+        public function __construct() {
+            $this->folders = [
+                'route1' => (object)["name" => "route1", "url" => "https://strava.com"],
+                'route2' => (object)["name" => "route2", "url" => "https://strava.com"],
+                'foo' => [
+                    'route3' => (object)["name" => "route3", "url" => "https://strava.com"],
+                    'test' => [
+                        'bar' => ['Route4' => (object)["name" => "route4", "url" => "https://strava.com"]]
+                    ]
                 ]
-            ]
-        ];
+            ];
+        }
+
+
+
 
 
         /**
@@ -19,13 +35,13 @@
          * @param string $uri The URI of the request
          * @return bool|array false if the URI is invalid or an array with the routes
          */
-        public static function getRoutes($uri) {
+        public function getRoutes($uri) {
             // Split the URI into an array
             $uriParts = explode('/', substr($uri, 1));
-            // The actual level od the folders
-            $level = self::$folders;
-            
-            // Search trough the parts of the URI
+            $level = $this->folders;
+
+            if ($uriParts[0] == '') unset($uriParts[0]);
+
             foreach ($uriParts as $part) {
                 // When this part is not represented by a folder
                 if (!isset($level[$part])) {
@@ -35,7 +51,7 @@
                 $level = $level[$part];
             }
 
-            return $level;
+            return array_keys($level);
         }
 
 

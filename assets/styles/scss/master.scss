@@ -14,8 +14,13 @@ body, html {
 .main {
     min-height: 90vh;
     margin-top: 10rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 @import 'components/_header';
 @import 'components/_footer';
+@import 'components/_authbox';
+
 @import 'components/_media';

@@ -3,6 +3,8 @@
     include __DIR__.'/config.php';
     include __DIR__.'/autoload.php';
 
+    $organizer = new RouteOrganizer;
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -16,20 +18,34 @@
 
     <main class="main">
         <?php
-            if ($result = RouteOrganizer::getRoutes($_SERVER['REQUEST_URI'])) {
-                foreach ($result as $item) {
-                    if (gettype($item) == 'array') {
-                    ?>
-                        <a href="<?=key($item)?>"><?=key($item)?></a>
-                    <?php
-                    }
-                    else {
-                        echo "$item";
+            // When User is logged in
+            if (Strava::loggedIn()) {
+
+                // Get all items of the actual folder
+                if ($items = $organizer->getRoutes($_SERVER['REQUEST_URI'])) {
+                    print_r($items);
+                    foreach ($items as $item) {
+                        echo key($item)."<br/>";
+                        /*if (gettype($item) == 'array') {
+                            ?>
+                                <a href="<?=key($item) ?>"><?=key($item) ?></a>
+                            <?php
+                        }
+                        elseif (gettype($item) == 'object') {
+                            ?> 
+                                <a href="<?= $item->url ?>"><?= $item->name ?></a>
+                            <?php
+                        }*/
                     }
                 }
+                // Folder is not existing
+                else {
+                    $organizer->output404();
+                }
+
             }
             else {
-                RouteOrganizer::output404();
+                include __DIR__.'/views/auth.php';
             }
         ?>
     </main>
