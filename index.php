@@ -17,37 +17,17 @@
     <?php include 'components/header.php' ?>
 
     <main class="main">
-        <?php
-            // When User is logged in
-            if (Strava::loggedIn()) {
-
-                // Get all items of the actual folder
-                if ($items = $organizer->getRoutes($_SERVER['REQUEST_URI'])) {
-                    print_r($items);
-                    foreach ($items as $item) {
-                        echo key($item)."<br/>";
-                        /*if (gettype($item) == 'array') {
-                            ?>
-                                <a href="<?=key($item) ?>"><?=key($item) ?></a>
-                            <?php
-                        }
-                        elseif (gettype($item) == 'object') {
-                            ?> 
-                                <a href="<?= $item->url ?>"><?= $item->name ?></a>
-                            <?php
-                        }*/
-                    }
+        <div class="output">
+            <?php
+                // When User is logged in
+                if (Strava::loggedIn()) {
+                    include __DIR__.'/views/listing.php';
                 }
-                // Folder is not existing
                 else {
-                    $organizer->output404();
+                    include __DIR__.'/views/auth.php';
                 }
-
-            }
-            else {
-                include __DIR__.'/views/auth.php';
-            }
-        ?>
+            ?>
+        </div>
     </main>
 
     <?php include 'components/footer.php' ?>

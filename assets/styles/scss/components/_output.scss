@@ -1,0 +1,23 @@
+.output {
+    width: 70%;
+    padding: 0 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &__breadcrumbs {
+        width: 70%;
+        margin-bottom: 4rem;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+
+        &__item {
+            text-decoration: none;
+            color: $dark;
+            padding: 0.6rem 1rem;
+            border: solid 1px $blue;
+        }
+    }
+}

@@ -11,17 +11,13 @@
 
 
         /**
-         * Connects to Strava
+         * Initiates the routes
          */
         public function __construct() {
             $this->folders = [
-                'route1' => (object)["name" => "route1", "url" => "https://strava.com"],
-                'route2' => (object)["name" => "route2", "url" => "https://strava.com"],
-                'foo' => [
-                    'route3' => (object)["name" => "route3", "url" => "https://strava.com"],
-                    'test' => [
-                        'bar' => ['Route4' => (object)["name" => "route4", "url" => "https://strava.com"]]
-                    ]
+                "route1" => (object)['name' => 'Route 1', 'type' => 1, 'distance' => 70, "url" => "https://strava.com"],
+                "foo" => [
+                    "route2" => (object)['name' => 'Route 2', 'type' => 2, 'distance' => 120, "url" => "https://strava.com"],
                 ]
             ];
         }
@@ -33,7 +29,7 @@
         /**
          * Searching all routes of an URI
          * @param string $uri The URI of the request
-         * @return bool|array false if the URI is invalid or an array with the routes
+         * @return bool|objecz false if the URI is invalid or {items=>[], $level=>[], $breadcrumbs=>[]}
          */
         public function getRoutes($uri) {
             // Split the URI into an array
@@ -43,15 +39,18 @@
             if ($uriParts[0] == '') unset($uriParts[0]);
 
             foreach ($uriParts as $part) {
-                // When this part is not represented by a folder
-                if (!isset($level[$part])) {
+                if (isset($level[$part])) {
+                    $level = $level[$part];
+                }
+                else {
                     return false;
                 }
-                // Go one level deeper
-                $level = $level[$part];
             }
-
-            return array_keys($level);
+            return (object)[
+                "items" => array_keys($level),
+                "level" => $level,
+                "breadcrumbs" => $uriParts
+            ];
         }
 
 
