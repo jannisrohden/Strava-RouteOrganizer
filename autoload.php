@@ -1,5 +1,7 @@
 <?php
 
+    include __DIR__.'/config.php';
+
     spl_autoload_register(function ($classname) {
-        include "classes/$classname.php";
+        include __DIR__."/classes/$classname.php";
     });

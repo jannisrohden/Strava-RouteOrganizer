@@ -1,6 +1,4 @@
 <?php
-
-    include __DIR__.'/config.php';
     include __DIR__.'/autoload.php';
 
     $organizer = new RouteOrganizer;

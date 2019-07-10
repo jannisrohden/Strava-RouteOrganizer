@@ -13,7 +13,7 @@ body, html {
 
 .main {
     min-height: 90vh;
-    margin-top: 10rem;
+    margin-top: 2rem;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -24,5 +24,7 @@ body, html {
 @import 'components/_footer';
 @import 'components/_authbox';
 @import 'components/_output';
+@import 'components/_folder';
+@import 'components/_route';
 
 @import 'components/_media';
