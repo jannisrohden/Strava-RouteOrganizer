@@ -1,10 +1,17 @@
 <?php
 
 class Config {
-    public static $baseUrl = "http://localhost";
-    public static $imgUrl = "http://localhost/assets/img";
-    public static $cssUrl = "http://localhost/assets/styles/css";
+    static $baseUrl = "http://localhost";
+    static $imgUrl = "http://localhost/assets/img";
+    static $cssUrl = "http://localhost/assets/styles/css";
 
-    public static $mode = "development";
+    static $mode = "development";
+    static $version = "0.1";
+
+    static $strava_auth_url = "https://www.strava.com/oauth/authorize";
+    static $strava_token_url = "https://www.strava.com/oauth/token";
+    static $strava_response_type = "code";
+    static $strava_scope = "read";
+    static $strava_approval_prompt = "auto";
 
 }
