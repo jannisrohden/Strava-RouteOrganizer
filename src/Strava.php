@@ -34,15 +34,23 @@ class Strava
      * @return bool Returns false or redirect to start
      */
     public function tokenExchange($code, $scope) { 
-        if ($scope === Config::$strava_scope) {
+        echo "der Code ist: $code";
+        if (in_array(Config::$strava_scope, explode(',', $scope))) {
             $clientId = Secret::CLIENT_ID;
             $secret = Secret::SECRET_TOKEN;
+            $postData = [
+                "client_id" => $clientId,
+                "client_secret" => $secret,
+                "code" => $code,
+                "grant_type" => "authorization_code"
+            ];
+            $httpContent = http_build_query($postData);
 
             $curl = curl_init(Config::$strava_token_url);
             curl_setopt_array($curl, [
                 CURLOPT_POST => true,
                 CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_POSTFIELDS => "client_id=$clientId&client_secret=$secret&code=$code&grant_type=authorization_code"
+                CURLOPT_POSTFIELDS => $httpContent,
             ]);
             $result = curl_exec($curl);
             
@@ -55,7 +63,8 @@ class Strava
                 header("Location: {Config::$baseUrl}");
             }
             else {
-                $this->error_message = "An error occurred (HTTP code $statusCode). Please try it again later!".$result;
+                $this->error_message = "Oops, something went wrong (Error $statusCode). Please try it again later!".$result;
+                print_r($httpContent);
                 return false;
             }
 
