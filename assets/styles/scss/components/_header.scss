@@ -29,4 +29,21 @@
             width: 10rem;
         }
     }
+
+    &__profile {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: $white;
+        //transition: all 250ms;
+
+        &__image {
+            border-radius: 100px;
+            margin-left: 0.4rem;
+        }
+
+        &:hover {
+            transform: scale(1.03);
+        }
+    }
 }

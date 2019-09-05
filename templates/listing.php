@@ -49,7 +49,6 @@ else {
         <?= $breadcrumbs ?>
     </div>
 <?php endif; ?>
-
 <?php if (isset($folders, $routes)): ?>
     <div class="output__listing">
         <div class="output__listing__row">

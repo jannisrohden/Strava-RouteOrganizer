@@ -1,6 +1,6 @@
 <div class="infobox">
     <p class="infobox__headline">Please connect with Strava</p>
-    <p class="infobox__text">After signing in to Strava you will see all your routes sorted by folders. To add a route to a folder just use the schema <b><i>[folder1][folder2] Route Name</i></b> for your routes name. You can use as many folders as you want.</p>
+    <p class="infobox__text infobox__text--center">You must sign in with your Strava account and allow RouteOrganizer to view your routes.</p>
 
     <form action="<?= Config::$strava_auth_url ?>" method="get">
 

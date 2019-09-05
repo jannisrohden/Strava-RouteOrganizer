@@ -18,6 +18,10 @@
         line-height: 25px;
         margin-bottom: 1.7rem;
         color: $dark-secondary;
+
+        &--center {
+            text-align: center;
+        }
     }
 
     &__button {
