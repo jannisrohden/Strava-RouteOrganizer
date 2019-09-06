@@ -1,114 +1,114 @@
 <?php
 
-    class RouteOrganizer
+class RouteOrganizer
+{
+
+
+    public $folders = [];
+    public $routes;
+    public $error_message;
+
+
+
+
+
+    /**
+     * Initiates the routes
+     */
+    public function listRoutes() 
     {
+        $curl = curl_init(Config::$strava_api_url."/athletes/{$_SESSION['athlete']->id}/routes");
+        curl_setopt_array($curl, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER => ["Accept: application/json", "Authorization: Bearer {$_SESSION['access_token']}"]
+        ]);
+        $result = curl_exec($curl);
+        if ( ($statusCode = curl_getinfo($curl, CURLINFO_RESPONSE_CODE)) == 200 ) {
+            $this->routes = json_decode($result);
+            $this->processRoutes();
+            return true;
+        }
+        else {
+            $this->error_message = "Oops, something went wrong at the route organization (Error $statusCode from Strava). Please try it again later!";
+            return false;
+        }
+
+        /*$this->folders = [
+            htmlspecialchars("route 1") => (object)['name' => 'Route 1', 'type' => 1, 'distance' => 70, "url" => "https://strava.com"],
+            "folder_1" => [
+                "route2" => (object)['name' => 'Route 2', 'type' => 2, 'distance' => 120, "url" => "https://strava.com"],
+                "folder2" => [
+                    "folder_3" => [],
+                    "folder_4" => []
+                ]
+            ]
+        ];*/
+    }
 
 
-        public $folders = [];
-        public $routes;
-        public $error_message;
+
+
+
+
+    /**
+     * Transforms the array with routes delivered by strava into folders
+     */
+    private function processRoutes() 
+    {
+        foreach ($this->routes as $route) {
+            $this->folders[htmlspecialchars($route->name)] = (object)['name' => $route->name, 'type' => 1, 'distance' => 70, "url" => "https://strava.com"];
+        }
+    }
 
 
 
 
 
-        /**
-         * Initiates the routes
-         */
-        public function listRoutes() 
-        {
-            $curl = curl_init(Config::$strava_api_url."/athletes/{$_SESSION['athlete']->id}/routes");
-            curl_setopt_array($curl, [
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_HTTPHEADER => ["Accept: application/json", "Authorization: Bearer {$_SESSION['access_token']}"]
-            ]);
-            $result = curl_exec($curl);
-            if ( ($statusCode = curl_getinfo($curl, CURLINFO_RESPONSE_CODE)) == 200 ) {
-                $this->routes = json_decode($result);
-                $this->processRoutes();
-                return true;
+    /**
+     * Searching all routes of an URI
+     * @param string $uri The URI of the request
+     * @return bool|object false if the URI is invalid or {items=>[], $level=>[], $breadcrumbs=>[]}
+     */
+    public function getRoutes($uri) 
+    {
+        // Split the URI into an array
+        $uriParts = explode('/', substr($uri, 1));
+        $level = $this->folders;
+
+        if ($uriParts[0] == '') unset($uriParts[0]);
+
+        foreach ($uriParts as $part) {
+            if (isset($level[$part])) {
+                $level = $level[$part];
             }
             else {
-                $this->error_message = "Oops, something went wrong at the route organization (Error $statusCode from Strava). Please try it again later!";
                 return false;
             }
-
-            /*$this->folders = [
-                htmlspecialchars("route 1") => (object)['name' => 'Route 1', 'type' => 1, 'distance' => 70, "url" => "https://strava.com"],
-                "folder_1" => [
-                    "route2" => (object)['name' => 'Route 2', 'type' => 2, 'distance' => 120, "url" => "https://strava.com"],
-                    "folder2" => [
-                        "folder_3" => [],
-                        "folder_4" => []
-                    ]
-                ]
-            ];*/
         }
+        return (object)[
+            "items" => array_keys($level),
+            "level" => $level,
+            "breadcrumbs" => $uriParts
+        ];
+    }
 
 
 
 
 
-
-        /**
-         * Transforms the array with routes delivered by strava into folders
-         */
-        private function processRoutes() 
-        {
-            foreach ($this->routes as $route) {
-                $this->folders[htmlspecialchars($route->name)] = (object)['name' => $route->name, 'type' => 1, 'distance' => 70, "url" => "https://strava.com"];
-            }
-        }
+    /**
+     * Outputs an error page
+     * @return string HTML code with the error message
+     */
+    public static function output404() 
+    {
+        echo '<h1>Error 404 - This page does not exists!</h1>';
+    }
 
 
 
 
-
-        /**
-         * Searching all routes of an URI
-         * @param string $uri The URI of the request
-         * @return bool|object false if the URI is invalid or {items=>[], $level=>[], $breadcrumbs=>[]}
-         */
-        public function getRoutes($uri) 
-        {
-            // Split the URI into an array
-            $uriParts = explode('/', substr($uri, 1));
-            $level = $this->folders;
-
-            if ($uriParts[0] == '') unset($uriParts[0]);
-
-            foreach ($uriParts as $part) {
-                if (isset($level[$part])) {
-                    $level = $level[$part];
-                }
-                else {
-                    return false;
-                }
-            }
-            return (object)[
-                "items" => array_keys($level),
-                "level" => $level,
-                "breadcrumbs" => $uriParts
-            ];
-        }
-
-
-
-
-
-        /**
-         * Outputs an error page
-         * @return string HTML code with the error message
-         */
-        public static function output404() 
-        {
-            echo '<h1>Error 404 - This page does not exists!</h1>';
-        }
-
-
-
-
-        /**
+    /**
      * Checks if the user is already authenticated
      * @return bool
      */
@@ -171,4 +171,4 @@
     }
 
 
-    }
+}
