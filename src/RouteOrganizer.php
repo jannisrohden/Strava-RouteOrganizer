@@ -25,12 +25,10 @@ class RouteOrganizer
         $result = curl_exec($curl);
         if ( ($statusCode = curl_getinfo($curl, CURLINFO_RESPONSE_CODE)) == 200 ) {
             $this->routes = json_decode($result);
-            $this->processRoutes();
-            return true;
+            $_SESSION['folders'] = $this->processRoutes();
         }
         else {
             $this->error_message = "Oops, something went wrong at the route organization (Error $statusCode from Strava). Please try it again later!";
-            return false;
         }
 
         /*$this->folders = [
@@ -55,8 +53,10 @@ class RouteOrganizer
      */
     private function processRoutes() 
     {
+        $folders = [];
         foreach ($this->routes as $route) {
             $this->folders[htmlspecialchars($route->name)] = (object)['name' => $route->name, 'type' => 1, 'distance' => 70, "url" => "https://strava.com"];
+            
         }
     }
 
@@ -69,11 +69,11 @@ class RouteOrganizer
      * @param string $uri The URI of the request
      * @return bool|object false if the URI is invalid or {items=>[], $level=>[], $breadcrumbs=>[]}
      */
-    public function getRoutes($uri) 
+    public function getRoutesOfUri($uri) 
     {
         // Split the URI into an array
         $uriParts = explode('/', substr($uri, 1));
-        $level = $this->folders;
+        $level = $_SESSION['folders'];
 
         if ($uriParts[0] == '') unset($uriParts[0]);
 
@@ -156,6 +156,8 @@ class RouteOrganizer
                 $_SESSION['access_token'] = $result->access_token;
                 $_SESSION['expiration'] = $result->expires_at;
                 $_SESSION['refresh_token'] = $result->refresh_token;
+
+                $this->listRoutes();
                 header("Location: ".Config::$baseUrl);
             }
             else {

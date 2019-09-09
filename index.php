@@ -21,7 +21,7 @@
 
                 // When User is logged in
                 if ($organizer->isUserloggedIn()) {
-                    if ($organizer->listRoutes()) include __DIR__."/templates/listing.php";
+                    if (isset($_SESSION['folders'])) include __DIR__."/templates/listing.php";
                     else {
                         $error = $organizer->error_message;
                         include __DIR__."/templates/error.php";

@@ -2,7 +2,7 @@
 
 
 // Route does not exist
-if (!$result = $organizer->getRoutes($_SERVER['REQUEST_URI'])) {
+if (!$result = $organizer->getRoutesOfUri($_SERVER['REQUEST_URI'])) {
     $organizer->output404();
 }
 // Route is valid
