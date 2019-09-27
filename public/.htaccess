@@ -1,0 +1,37 @@
+#DirectoryIndex public/index.php
+
+# enable apache rewrite engine
+RewriteEngine on
+
+# set your rewrite base
+# Edit this in your init method too if you script lives in a subfolder
+#RewriteBase /public
+
+# Deliver the folder or file directly if it exists on the server
+#RewriteCond %{REQUEST_FILENAME} !-f
+#RewriteCond %{REQUEST_FILENAME} !-d
+ 
+# Push every request to index.php
+#RewriteRule ^(.*)$ index.php [QSA]
+
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
+    RewriteEngine On
+
+    # Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Redirect Trailing Slashes If Not A Folder...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
+
+    # Handle Front Controller...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
+</IfModule>

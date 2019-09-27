@@ -2,8 +2,8 @@
 
 class Config {
     static $baseUrl = "http://localhost";
-    static $imgUrl = "http://localhost/assets/img";
-    static $cssUrl = "http://localhost/assets/styles/css";
+    static $imgUrl = "http://localhost/assets/images";
+    static $cssUrl = "http://localhost/assets/css";
 
     static $mode = "development";
     static $version = "0.1";
@@ -14,5 +14,7 @@ class Config {
     static $strava_response_type = "code";
     static $strava_scope = "read_all";
     static $strava_approval_prompt = "auto";
+
+    static $blockedRoutes = ["assets"];
 
 }
