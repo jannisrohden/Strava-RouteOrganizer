@@ -1,0 +1,13 @@
+{
+    "name": "jannisrohden/strava_route_organizer",
+    "type": "project",
+    "require": {
+        "symfony/http-client": "^5.0",
+        "symfony/dotenv": "^5.0"
+    },
+    "autoload": {
+        "classmap": [
+            "src/"
+        ]
+    }
+}

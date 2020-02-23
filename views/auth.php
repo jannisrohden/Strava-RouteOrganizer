@@ -1,16 +1,20 @@
-<div class="infobox">
-    <p class="infobox__headline">Please connect with Strava</p>
-    <p class="infobox__text infobox__text--center">You must sign in with your Strava account and allow RouteOrganizer to view your routes.</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <?php include __DIR__.'/meta.inc.php'; ?>
+    <title>Document</title>
+</head>
+<body>
+    <?php include __DIR__.'/header.inc.php'; ?>
 
-    <form action="<?= Config::$strava_auth_url ?>" method="get">
+    <main class="container">
+        <div class="message-box">
+            <h3 class="message-box__headline">Please sign in</h3>
+            <p class="message-box__description">Sign in with your Strava account to see your routes here.</p>
+            <a href="/" class="button button--large button--orange">Sign in with Strava</a>
+        </div>
+    </main>
 
-        <input type="hidden" name="client_id" value="<?= Secret::CLIENT_ID ?>">
-        <input type="hidden" name="redirect_uri" value="<?= Config::$baseUrl ?>">
-        <input type="hidden" name="response_type" value="<?= Config::$strava_response_type ?>">
-        <input type="hidden" name="scope" value="<?= Config::$strava_scope ?>">
-        <input type="hidden" name="approval_prompt" value="<?= Config::$strava_approval_prompt ?>">
-
-        <button type="submit" class="infobox__button infobox__button--orange">Connect with Strava</button>
-    </form>
-    
-</div>
+    <?php include __DIR__.'/footer.inc.php'; ?>
+</body>
+</html>

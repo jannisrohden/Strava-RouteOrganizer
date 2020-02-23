@@ -1,0 +1,29 @@
+.button {
+    display: inline-block;
+    text-decoration: none;
+    color: $white;
+    background: $dark;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    box-shadow: 2px 2px 10px 0 rgba($color: $dark, $alpha: 0.5);
+    transition: all 250ms;
+    opacity: 0.9;;
+
+    &--large {
+        padding: 0.8rem 1.7rem;
+        font-size: 1.1rem;
+    }
+
+    &--small {
+        padding: 0.2rem 0.7rem;
+        font-size: 0.88rem;
+    }
+
+    &--orange {
+        background: $orange;
+    }
+
+    &:hover {
+        opacity: 1;
+    }
+}

@@ -1,1 +1,3 @@
 secret.php
+/vendor/
+.env

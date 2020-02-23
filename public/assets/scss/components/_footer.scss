@@ -1,14 +1,23 @@
 .footer {
     width: 100%;
-    background: $blue;
+    background: $dark;
     display: flex;
-    flex-direction: column;
     align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 0 0.5rem;
 
-    &__strava {
-        &__logo {
-            width: 15rem;
-            max-width: 95%;
+    &__item {
+        display: flex;
+        align-items: center;
+        margin: 0 2rem;
+        text-decoration: none;
+        padding: 0.4rem 0.2rem;
+
+        &__text {
+            color: $white;
+            margin-left: 0.8rem;
+            font-size: 1rem;
         }
     }
 }

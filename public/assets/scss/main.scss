@@ -1,0 +1,16 @@
+@import '_setup';
+
+* {
+    font-family: $font;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+@import 'components/header';
+@import 'components/container';
+@import 'components/footer';
+@import 'components/strava-logo';
+@import 'components/dark-hover';
+@import 'components/button';
+@import 'components/message-box';

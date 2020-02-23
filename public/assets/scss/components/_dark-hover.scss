@@ -1,0 +1,7 @@
+.dark-hover {
+    transition: all 250ms;
+    
+    &:hover {
+        background: $dark-contrast;
+    }
+}
