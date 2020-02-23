@@ -1,0 +1,41 @@
+@media (max-width: 1500px) {
+
+    .container {
+        width: 100%;
+        margin-left: 0;
+        padding: 3rem 1rem;
+    }
+
+    .message-box {
+        width: 65%;
+        margin-left: 17.5%;
+    }
+
+}
+
+
+
+@media (max-width: 850px) {
+
+    .message-box {
+        width: 95%;
+        margin-left: 2.5%;
+    }
+
+}
+
+
+
+@media (max-width: 500px) {
+
+    .container {
+        padding: 3rem 0;
+    }
+
+    .message-box {
+        width: 97%;
+        margin-left: 1.5%;
+        padding: 2rem 1rem;
+    }
+    
+}

@@ -3,25 +3,39 @@
 class RouteOrganizer
 {
 
+    private object $data;
 
-    public static function isUserLoggedIn(): bool
+
+    public static function showError ( string $error )
     {
-        if ( isset($_SESSION['strava']) && strtotime($_SESSION['strava']['expiration']) < time() ) {
-            return true;
-        }
-        return false;
+        self::outputView('error', ['error' => $error]);
     }
 
 
-    public static function auth(): void
+    public function __construct()
     {
-        include __DIR__.'/../views/auth.php';
+        $this->data = (object)[];
     }
 
 
-    public static function directory(): void
+    public function showAuthDialog(): void
     {
-        
+        self::outputView('auth');
+    }
+
+
+    public function showDirectory(): void
+    {
+        $this->outputView('directory');
+    }
+
+
+    private static function outputView ( string $component, array $data = [] ): void
+    {
+        ob_start();
+        include __DIR__ . "/../views/components/$component.php";
+        $content = ob_get_clean();
+        include __DIR__."/../views/main.php";
     }
 
 

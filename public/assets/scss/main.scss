@@ -7,10 +7,23 @@
     box-sizing: border-box;
 }
 
+body {
+    width: 100%;
+
+    &.has-image {
+        background-image: url(../images/background.jpg);
+        background-size: cover;
+    }
+}
+
+.margin-y {
+    margin: 2rem 0;
+}
+
 @import 'components/header';
 @import 'components/container';
 @import 'components/footer';
 @import 'components/strava-logo';
-@import 'components/dark-hover';
 @import 'components/button';
 @import 'components/message-box';
+@import 'components/media-queries';
