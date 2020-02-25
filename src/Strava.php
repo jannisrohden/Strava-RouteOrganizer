@@ -8,6 +8,7 @@ class Strava
 
 
     private string $clientId, $secret;
+    private $client;
 
 
 
@@ -32,10 +33,13 @@ class Strava
     // Checks if strava's information are complete
     public static function isUserLoggedIn(): bool
     {
-        if (
-            isset($_SESSION['strava']['access_token'], $_SESSION['strava']['id'], $_SESSION['strava']['expiration']) &&
-            $_SESSION['strava']['expiration'] > time()
-        ) {
+        $val = isset(
+            $_SESSION['strava']['access_token'], 
+            $_SESSION['strava']['id'], 
+            $_SESSION['strava']['expiration'],
+            $_SESSION['routes']
+        );
+        if ( $val && $_SESSION['strava']['expiration'] > time() ) {
             return true;
         }
         return false;
@@ -62,6 +66,7 @@ class Strava
     {
         $this->clientId = $clientId;
         $this->secret = $secret;
+        $this->client = HttpClient::create();
     }
 
 
@@ -74,16 +79,6 @@ class Strava
         }
         else 
             $this->showPermissionError();
-    }
-
-
-
-    // Compares the returned state
-    private function validateState ( string $state ): bool
-    {
-        if ( $state === $_SESSION['strava']['state'] ) 
-            return true;
-        return false;
     }
 
 
@@ -107,9 +102,9 @@ class Strava
 
 
     // Outputs a general error message
-    private function showGeneralError ( int $code ): void
+    private function showError (string $message = "An error occurred. Please try it again later!" ): void
     {
-        RouteOrganizer::showError("An error occurred ($code). Please try it again later!");
+        RouteOrganizer::showError($message);
     }
 
 
@@ -117,8 +112,7 @@ class Strava
     // Requests an access token from Strava
     private function requestAccessToken ( string $code ): void
     {
-        $client = HttpClient::create();
-        $response = $client->request('POST', $_ENV['STRAVA_API_URL']."/oauth/token", [
+        $response = $this->client->request('POST', $_ENV['STRAVA_API_URL']."/oauth/token", [
             'body' => [
                 'client_id' => $this->clientId, 
                 'client_secret' => $this->secret, 
@@ -130,7 +124,7 @@ class Strava
         if ( $response->getStatusCode() === 200 ) 
             $this->validateAccessToken($response->toArray());
         else
-            $this->showGeneralError(2);
+            $this->showError("An error ({$response->getStatusCode()}) during the communication with Strava occurred! Please try it again");
     }
 
 
@@ -147,18 +141,75 @@ class Strava
             isset($res['athlete']['lastname'])
         ];
         if ( !in_array(false, $requiredValues) ) {
-            $_SESSION['strava'] = [
-                'expiration' => $res['expires_at'],
-                'refresh_token' => $res['refresh_token'],
-                'access_token' => $res['access_token'],
-                'id' => $res['athlete']['id'],
-                'name' => $res['athlete']['firstname'] . ' ' . $res['athlete']['lastname'],
-                'image' => $res['athlete']['profile_medium']
-            ];
-            header("Location: {$_ENV['BASE_URL']}");
+            if ( $this->createAuthSession($res) ) {
+                if ( $this->loadRoutes() ) {
+                    header("Location: {$_ENV['BASE_URL']}");
+                }
+                else {
+                    $this->showError("Failed to load your routes from Strava. Please try it again");
+                }
+            }
         }
         else
-            $this->showGeneralError(3);
+            $this->showError();
     }
+
+
+
+    private function createAuthSession( array $res ): bool
+    {
+        $_SESSION['strava'] = [
+            'expiration' => $res['expires_at'],
+            'refresh_token' => $res['refresh_token'],
+            'access_token' => $res['access_token'],
+            'id' => $res['athlete']['id'],
+            'name' => $res['athlete']['firstname'] . ' ' . $res['athlete']['lastname'],
+            'image' => $res['athlete']['profile_medium']
+        ];
+        return true;
+    }
+
+
+
+    private function loadRoutes(): bool
+    {
+        $url = $_ENV['STRAVA_API_URL'] . "/athletes/{$_SESSION['strava']['id']}/routes?per_page=200&page=1";
+        $response = $this->client->request( 'GET',  $url, [
+                'auth_bearer' => $_SESSION['strava']['access_token']
+        ]);
+        if ( $response->getStatusCode() == 200 ) {
+            return $this->listRoutes($response->toArray());
+        }
+        else {
+            print_r($response->getStatusCode());
+            return false;
+        }
+    }
+
+
+
+    private function listRoutes ( array $routes ): bool
+    {
+        $_SESSION['routes'] = [];
+        foreach ( $routes as $route ) {
+            $folders = $this->getRouteFolders($route['name'], []);
+        }
+        return true;
+    }
+
+
+    
+    private function getRouteFolders ( string $routeName, array $folders ): array
+    {
+        if ($close = strpos($routeName, ']')) {
+            $folders[] = str_replace('[', '', substr($routeName, 0, $close));
+            $newName = substr($routeName, $close + 1);
+            return $this->getRouteFolders($newName, $folders);
+        }
+        else 
+            return $folders;
+    }
+
+
 
 }
