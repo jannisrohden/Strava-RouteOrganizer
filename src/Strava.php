@@ -143,7 +143,7 @@ class Strava
         if ( !in_array(false, $requiredValues) ) {
             if ( $this->createAuthSession($res) ) {
                 if ( $this->loadRoutes() ) {
-                    header("Location: {$_ENV['BASE_URL']}");
+                    header("Location: {$_ENV['BASE_URL']}?");
                 }
                 else {
                     $this->showError("Failed to load your routes from Strava. Please try it again");
@@ -192,7 +192,9 @@ class Strava
     {
         $_SESSION['routes'] = [];
         foreach ( $routes as $route ) {
-            $folders = $this->getRouteFolders($route['name'], []);
+            $getRouteFolders = $this->getRouteFolders($route['name'], []);
+            $route['name'] = array_keys($getRouteFolders)[0];
+            $this->putRouteInFolder($route, $getRouteFolders[$route['name']]);
         }
         return true;
     }
@@ -207,7 +209,48 @@ class Strava
             return $this->getRouteFolders($newName, $folders);
         }
         else 
-            return $folders;
+            return [ $routeName => $folders ];
+    }
+
+
+
+    private function putRouteInFolder ( array $route, array $folders ): void
+    {
+        $target = '';
+        foreach ( $folders as $folder ) {
+            $target .= '/'.$this->parseFolderName($folder);
+        }
+
+        if ( !isset($_SESSION['routes'][$target]) )
+            $_SESSION['routes'][$target] = [];
+
+        $_SESSION['routes'][$target][] = (object)[
+            'name' => $route['name'],
+            'type' => $route['type'],
+            'distance' => $route['distance'],
+            'id' => $route['id'],
+            'elevation' => $route['elevation_gain']
+        ];
+    }
+
+
+
+    private function parseFolderName ( string $name ): string
+    {
+        $name = trim($name);
+        $name = strtolower($name);
+        $name = htmlspecialchars($name);
+        $replace = [
+            ' ' => '_',
+            /*'ö' => 'oe',
+            'ä' => 'ae',
+            'ü' => 'ue',
+            'ß' => 'ss',*/
+            '&' => '+',
+            '?' => ' '
+        ];
+        $name = str_replace(array_keys($replace), array_values($replace), $name);
+        return $name;
     }
 
 
