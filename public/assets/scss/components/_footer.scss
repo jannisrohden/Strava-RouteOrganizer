@@ -5,9 +5,10 @@
     align-items: center;
     flex-wrap: wrap;
     justify-content: center;
-    padding: 0 0.5rem;
+    padding: 2rem 0.5rem;
 
     &__item {
+        max-width: 30rem;
         display: flex;
         align-items: center;
         margin: 0 2rem;

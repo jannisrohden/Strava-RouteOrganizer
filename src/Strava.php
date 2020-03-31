@@ -181,7 +181,6 @@ class Strava
             return $this->listRoutes($response->toArray());
         }
         else {
-            print_r($response->getStatusCode());
             return false;
         }
     }
